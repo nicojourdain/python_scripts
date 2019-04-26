@@ -15,7 +15,7 @@ def lonlat_to_xy(lon_in,lat_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon
         y=stereo.lonlat_to_xy(lon_in,lat_in,true_lat=180.0)[1]
 
      Input:
-        lon_in, lat_in are numpy arrays.
+        lon_in, lat_in are numpy arrays (in degE, degN).
 
      Optional arguments (default: WGS84):
         RT : Earth radius (m)
@@ -42,11 +42,10 @@ def lonlat_to_xy(lon_in,lat_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon
      sys.exit("~!@#$%^* error : meridian of positive Y axis is wrong >>>>>> stop !!")
 
    #- convert to radians :
-   deg2rad = np.pi / 180.e0
-   lat   = deg2rad * lat_in
-   lat_c = deg2rad * lat_true
-   lon   = deg2rad * lon_in
-   lon_0 = deg2rad * lon_posy
+   lat   = np.radians(lat_in)
+   lat_c = np.radians(lat_true)
+   lon   = np.radians(lon_in)
+   lon_0 = np.radians(lon_posy)
 
    #- if the standard parallel is in S.Hemi., switch signs.
    if ( lat_c < 0.0 ):
@@ -110,9 +109,8 @@ def xy_to_lonlat(x_in,y_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon_pos
      sys.exit("~!@#$%^* error : meridian of positive Y axis is wrong >>>>>> stop !!")
 
    #- convert to radians :
-   deg2rad = np.pi / 180.e0
-   lat_c = deg2rad * lat_true
-   lon_0 = deg2rad * lon_posy
+   lat_c = np.radians(lat_true)
+   lon_0 = np.radians(lon_posy)
 
    #- if the standard parallel is in S.Hemi., switch signs.
    if ( lat_c < 0.0 ):
@@ -141,7 +139,7 @@ def xy_to_lonlat(x_in,y_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon_pos
    lon = pm * lon
    lon = np.mod(lon+np.pi,2.e0*np.pi)-np.pi # longitude in [-pi,pi]
  
-   lon = lon / deg2rad
-   lat = lat / deg2rad
+   lon = np.degrees(lon)
+   lat = np.degrees(lat)
 
    return [lon,lat]
