@@ -5,13 +5,17 @@ import sys
 ############################################################################
 def lonlat_to_xy(lon_in,lat_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon_posy=0.e0):
    """
-     Converts (lon,lat) to stereographic (x,y).
+     Converts (lon_in,lat_in) to stereographic (x,y).
 
      Usage :
-
         import stereo
+        [x,y]=stereo.lonlat_to_xy(lon_in,lat_in)
         x=stereo.lonlat_to_xy(lon_in,lat_in)[0]
         y=stereo.lonlat_to_xy(lon_in,lat_in)[1]
+        y=stereo.lonlat_to_xy(lon_in,lat_in,true_lat=180.0)[1]
+
+     Input:
+        lon_in, lat_in are numpy arrays.
 
      Optional arguments (default: WGS84):
         RT : Earth radius (m)
@@ -19,7 +23,8 @@ def lonlat_to_xy(lon_in,lat_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon
         lat_true : latitude of true scale
         lon_posy : meridian of positive Y axis
 
-     History: N. Jourdain, IGE-CNRS, April 2019 (from Andy Bliss' matlab)
+     History: 
+        04/2019 : N. Jourdain, IGE-CNRS (from Andy Bliss' matlab)
 
    """
 
@@ -71,10 +76,14 @@ def xy_to_lonlat(x_in,y_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon_pos
      Converts stereographic (x,y) to (lon,lat) coordinates.
 
      Usage :
-
         import stereo
+        [lon,lat]=stereo.xy_to_lonlat(x_in,y_in)
         lon=stereo.xy_to_lonlat(x_in,y_in)[0]
         lat=stereo.xy_to_lonlat(x_in,y_in)[1]
+        lat=stereo.xy_to_lonlat(x_in,y_in,lon_posy=180.0)[1]
+
+     Input :
+        x_in, y_in are numpy arrays.
 
      Optional arguments (default: WGS84):
         RT : Earth radius (m)
@@ -82,7 +91,8 @@ def xy_to_lonlat(x_in,y_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon_pos
         lat_true : latitude of true scale
         lon_posy : meridian of positive Y axis
 
-     History: N. Jourdain, IGE-CNRS, April 2019 (from Andy Bliss' matlab)
+     History:
+        04/2019 : N. Jourdain, IGE-CNRS (from Andy Bliss' matlab)
 
    """
 
