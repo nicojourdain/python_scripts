@@ -82,7 +82,10 @@ def xy_to_lonlat(x_in,y_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon_pos
         lat=stereo.xy_to_lonlat(x_in,y_in,lon_posy=180.0)[1]
 
      Input :
-        x_in, y_in are numpy arrays.
+        x_in, y_in are stereographic coordinates in m [1d numpy array].
+
+     Output :
+        lon, lat geographical coordinates in degrees [2d numpy array]
 
      Optional arguments (default: WGS84):
         RT : Earth radius (m)
@@ -112,20 +115,26 @@ def xy_to_lonlat(x_in,y_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon_pos
    lat_c = np.radians(lat_true)
    lon_0 = np.radians(lon_posy)
 
+   [x2d, y2d] = np.meshgrid(x_in,y_in)
+
    #- if the standard parallel is in S.Hemi., switch signs.
    if ( lat_c < 0.0 ):
      pm    = -1    # plus or minus, north lat. or south
      lat_c = -lat_c
      lon_0 = -lon_0
-     x_in  = -x_in
-     y_in  = -y_in
+     x2d   = -x2d
+     y2d   = -y2d
    else:
      pm    = 1
 
+   print np.shape(x2d)
+
    t_c = np.tan(np.pi/4.e0-lat_c/2.e0) / ( (1.e0-ex*np.sin(lat_c)) / (1.e0+ex*np.sin(lat_c)) )**(ex/2.e0)
    m_c = np.cos(lat_c) / np.sqrt( 1.e0 - ex**2.e0 * (np.sin(lat_c))**2.e0 )
-   rho = np.sqrt(x_in**2.e0+y_in**2.e0)
+   rho = np.sqrt(x2d**2.e0+y2d**2.e0)
    t   = rho * t_c / ( RT * m_c )
+
+   print np.shape(rho)
 
    chi = 0.5*np.pi - 2.e0 * np.arctan(t)
 
@@ -133,7 +142,7 @@ def xy_to_lonlat(x_in,y_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon_pos
              + (                          (7./48.) * ex**4.e0 + (29./240.) * ex**6.e0 + ( 811./ 11520.) * ex**8.e0 ) * np.sin(4.e0*chi) \
              + (                                                ( 7./120.) * ex**6.e0 + (  81./  1120.) * ex**8.e0 ) * np.sin(6.e0*chi) \
              + (                                                                        (4279./161280.) * ex**8.e0 ) * np.sin(8.e0*chi)
-   lon = lon_0 + np.arctan2(x_in,-y_in)
+   lon = lon_0 + np.arctan2(x2d,-y2d)
 
    lat = pm * lat
    lon = pm * lon
@@ -141,5 +150,7 @@ def xy_to_lonlat(x_in,y_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon_pos
  
    lon = np.degrees(lon)
    lat = np.degrees(lat)
+
+   print np.shape(lon)
 
    return [lon,lat]
