@@ -2,4 +2,6 @@
 
 General python scripts and libraries
 
-* stereo.py : converstions between (longitude,latitude) and stereographic (x,y) projections.
+* *iceshelfmap.py* : remap Antarctic ice shelves.
+
+* *stereo.py* : converstions between (longitude,latitude) and stereographic (x,y) projections.
