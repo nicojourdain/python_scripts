@@ -3,7 +3,8 @@ import stereo
 
 #============================================================================
 #============================================================================
-def origin(xx,yy,loni,lati,lonf,latf):
+#def origin(xx,yy,loni,lati,lonf,latf):
+def origin(xx,yy,xi,yi,xf,yf):
    """
       Internal function.
 
@@ -14,8 +15,9 @@ def origin(xx,yy,loni,lati,lonf,latf):
       and latitude of 2 points. Returns original coordinates of rotated (x,y)
    """
 
-   [xi,yi] = stereo.lonlat_to_xy(loni,lati)
-   [xf,yf] = stereo.lonlat_to_xy(lonf,latf)
+   #[xi,yi] = stereo.lonlat_to_xy(loni,lati)
+   #[xf,yf] = stereo.lonlat_to_xy(lonf,latf)
+   print [xi,yi],  [xf,yf] 
 
    trans = [xf[0]-xi[0],yf[0]-yi[0]]
    sss = np.sqrt((xi[1]-xi[0])**2+(yi[1]-yi[0])**2)
@@ -77,17 +79,18 @@ def remap(x,y,M):
                   | ( (lon <= 180.0) & (lon >=  158.0) & (lat < -72.0) & (lat >= -87.0) ) ) \
       ]=1
    # DML from Brunt to Shirase :
-   msk[ np.where( ( (lon >= -40.0) & (lon < -15.0) & (lat < -69.0) & (lat >= -77.5) ) | \
-                  ( (lon >= -15.0) & (lon < -10.0) & (lat < -69.0) & (lat >= -75.0) ) | \
-                  ( (lon >= -10.0) & (lon <  42.0) & (lat < -69.0) & (lat >= -72.5) ) ) \
+   msk[ np.where( ( (lon >= -30.0) & (lon < -15.0) & (lat < -68.5) & (lat >= -77.5) ) | \
+                  ( (lon >= -15.0) & (lon < -10.0) & (lat < -68.5) & (lat >= -75.0) ) | \
+                  ( (lon >= -10.0) & (lon <  42.0) & (lat < -68.5) & (lat >= -72.5) ) ) \
       ]=2
    # Amery, from Shirase to Publications :
-   msk[ np.where( ( (lon >= 42.0) & (lon < 60.0) & (lat < -65.0) & (lat >= -70.0) ) | \
-                  ( (lon >= 60.0) & (lon < 80.0) & (lat < -65.0) & (lat >= -75.0) ) ) \
+   msk[ np.where( ( (lon >= 42.0) & (lon < 65.0) & (lat < -65.5) & (lat >= -69.0) ) | \
+                  ( (lon >= 65.0) & (lon < 75.0) & (lat < -67.0) & (lat >= -74.0) ) | \
+                  ( (lon >= 75.0) & (lon < 80.0) & (lat < -67.0) & (lat >= -71.0) ) ) \
       ]=3
    # East Antarctica (Pacific-Indian sector)
-   msk[ np.where( ( (lon >=  80.0) & (lon < 158.0) & (lat < -65.0) & (lat >= -70.0) ) | \
-                  ( (lon >= 158.0)                 & (lat < -65.0) & (lat >= -72.0) ) ) \
+   msk[ np.where( ( (lon >=  80.0) & (lon < 158.0) & (lat < -64.5) & (lat >= -70.0) ) | \
+                  ( (lon >= 158.0) & (lon < 172.0) & (lat < -64.5) & (lat >= -72.0) ) ) \
       ]=4
    
    #-------------------------------------------------
@@ -114,12 +117,20 @@ def remap(x,y,M):
    
    #-----------
    # DML from Brunt to Shirase :
-   loni = [-20.0, 40.0] # longitude of two initial points
-   lati = [-75.0,-72.5] # latitude of two initial points
-   lonf = [-50.0,  0.0] # longitude of two final points
-   latf = [-71.0,-85.0] # latitude of two final points
+   xi = np.array([  -560., 1231. ])*1.e3
+   yi = np.array([  1540., 1467. ])*1.e3
+   xf = np.array([ -1771., -234. ])*1.e3
+   yf = np.array([  1587.,  716. ])*1.e3 
+   aa=np.sqrt((xi[1]-xi[0])**2+(yi[1]-yi[0])**2)
+   bb=np.sqrt((xf[1]-xf[0])**2+(yf[1]-yf[0])**2)
+   print [xi+(xf-xi)*aa/bb], [yi+(yf-yi)*aa/bb]
+   #loni = [-20.0, 40.0] # longitude of two initial points
+   #lati = [-75.0,-72.5] # latitude of two initial points
+   #lonf = [-50.0,  0.0] # longitude of two final points
+   #latf = [-71.0,-85.0] # latitude of two final points
    
-   [x2d_ori,y2d_ori]=origin(x,y,loni,lati,lonf,latf)
+   #[x2d_ori,y2d_ori]=origin(x,y,loni,lati,lonf,latf)
+   [x2d_ori,y2d_ori]=origin(x,y,xi,yi,xf,yf)
   
    for kj in np.arange(0,np.size(y),1):
      for ki in np.arange(0,np.size(x),1):
@@ -135,12 +146,20 @@ def remap(x,y,M):
    
    #-----------
    # Amery, from Shirase to Publications :
-   loni = [  80.0,  40.0] # longitude of two initial points
-   lati = [ -70.0, -70.0] # latitude of two initial points
-   lonf = [ 120.0, -20.0] # longitude of two final points
-   latf = [ -77.5, -85.5] # latitude of two final points
+   xi = np.array([  2161.,  1411. ])*1.e3
+   yi = np.array([   381.,  1681. ])*1.e3
+   xf = np.array([ -1336.,  -342. ])*1.e3
+   yf = np.array([  -520.,   836. ])*1.e3
+   aa=np.sqrt((xi[1]-xi[0])**2+(yi[1]-yi[0])**2)
+   bb=np.sqrt((xf[1]-xf[0])**2+(yf[1]-yf[0])**2)
+   print [xi+(xf-xi)*aa/bb], [yi+(yf-yi)*aa/bb]
+   #loni = [  80.0,  40.0] # longitude of two initial points
+   #lati = [ -70.0, -70.0] # latitude of two initial points
+   #lonf = [ 120.0, -20.0] # longitude of two final points
+   #latf = [ -77.5, -85.5] # latitude of two final points
    
-   [x2d_ori,y2d_ori]=origin(x,y,loni,lati,lonf,latf)
+   #[x2d_ori,y2d_ori]=origin(x,y,loni,lati,lonf,latf)
+   [x2d_ori,y2d_ori]=origin(x,y,xi,yi,xf,yf)
    
    for kj in np.arange(0,np.size(y),1):
      for ki in np.arange(0,np.size(x),1):
@@ -156,12 +175,20 @@ def remap(x,y,M):
    
    #-----------
    # East Antarctica (Pacific-Indian sector) :
-   loni = [ 110.0, 160.0] # longitude of two initial points
-   lati = [ -70.0, -70.0] # latitude of two initial points
-   lonf = [-155.0, -87.0] # longitude of two final points
-   latf = [ -74.5, -70.5] # latitude of two final points
+   xi = np.array([  2062.,   751. ])*1.e3
+   yi = np.array([  -751., -2062. ])*1.e3
+   xf = np.array([  -973., -2278. ])*1.e3
+   yf = np.array([ -1371.,   -61. ])*1.e3
+   aa=np.sqrt((xi[1]-xi[0])**2+(yi[1]-yi[0])**2)
+   bb=np.sqrt((xf[1]-xf[0])**2+(yf[1]-yf[0])**2)
+   print [xi+(xf-xi)*aa/bb], [yi+(yf-yi)*aa/bb]
+   #loni = [ 110.0, 160.0] # longitude of two initial points
+   #lati = [ -70.0, -70.0] # latitude of two initial points
+   #lonf = [-155.0, -87.0] # longitude of two final points
+   #latf = [ -74.5, -70.5] # latitude of two final points
    
-   [x2d_ori,y2d_ori]=origin(x,y,loni,lati,lonf,latf)
+   #[x2d_ori,y2d_ori]=origin(x,y,loni,lati,lonf,latf)
+   [x2d_ori,y2d_ori]=origin(x,y,xi,yi,xf,yf)
    
    for kj in np.arange(0,np.size(y),1):
      for ki in np.arange(0,np.size(x),1):
