@@ -72,16 +72,25 @@ def remap(x,y,M):
    # Define masks (one value per sector):
    
    # West Ant. incl. FRIS and ROSS :
-   msk[ np.where(   ( (lon <  -40.0) & (lon >= -110.0) & (lat < -62.0) & (lat >= -85.0) ) \
-                  | ( (lon < -110.0) & (lon >= -140.0) & (lat < -73.0) & (lat >= -77.5) ) \
-                  | ( (lon < -140.0) & (lon >= -180.0) & (lat < -73.0) & (lat >= -87.0) ) \
-                  | ( (lon <  -25.0) & (lon >=  -40.0) & (lat < -77.5) & (lat >= -85.0) ) \
-                  | ( (lon <= 180.0) & (lon >=  158.0) & (lat < -72.0) & (lat >= -87.0) ) ) \
+   #msk[ np.where(   ( (lon <  -40.0) & (lon >= -110.0) & (lat < -62.0) & (lat >= -85.0) ) \
+   #               | ( (lon < -110.0) & (lon >= -140.0) & (lat < -73.0) & (lat >= -77.5) ) \
+   #               | ( (lon < -140.0) & (lon >= -180.0) & (lat < -73.0) & (lat >= -87.0) ) \
+   #               | ( (lon <  -25.0) & (lon >=  -40.0) & (lat < -77.5) & (lat >= -85.0) ) \
+   #               | ( (lon <= 180.0) & (lon >=  158.0) & (lat < -72.0) & (lat >= -87.0) ) ) \
+   #   ]=1
+   msk[ np.where(  ( (lon <  -40.0) & (lon >= -110.0) & (lat < -62.0) & (lat >= -90.0) ) | \
+                   ( (lon < -110.0) & (lon >= -180.0) & (lat < (-10.0*lon+62.0*202.0-110.0*72.0)/(-92.0) ) & (lat >= -90.0) ) | \
+                   ( (lon <= 180.0) & (lon >=  158.0) & (lat < (-10.0*lon-62.0*158.0+250.0*72.0)/(-92.0) ) & (lat >= -90.0) ) | \
+                   ( (lon <  -25.0) & (lon >=  -40.0) & (lat < (15.5*lon+40.0*77.5-25.0*62.0)/(-15.0) )    & (lat >= -90.0) ) ) \
       ]=1
    # DML from Brunt to Shirase :
+   #msk[ np.where( ( (lon >= -30.0) & (lon < -15.0) & (lat < -68.5) & (lat >= -77.5) ) | \
+   #               ( (lon >= -15.0) & (lon <   0.0) & (lat < -68.5) & (lat >= -75.0) ) | \
+   #               ( (lon >=   0.0) & (lon <  42.0) & (lat < -68.5) & (lat >= -72.5) ) ) \
+   #   ]=2
    msk[ np.where( ( (lon >= -30.0) & (lon < -15.0) & (lat < -68.5) & (lat >= -77.5) ) | \
-                  ( (lon >= -15.0) & (lon < -10.0) & (lat < -68.5) & (lat >= -75.0) ) | \
-                  ( (lon >= -10.0) & (lon <  42.0) & (lat < -68.5) & (lat >= -72.5) ) ) \
+                  ( (lon >= -15.0) & (lon <  20.0) & (lat < -68.5) & (lat >= (5.0*lon-15.0*72.5-20.0*77.5)/35.0 ) ) | \
+                  ( (lon >=  20.0) & (lon <  42.0) & (lat < -68.5) & (lat >= (0.5*lon-42.0*72.5+20.0*72.0)/22.0 ) ) ) \
       ]=2
    # Amery, from Shirase to Publications :
    msk[ np.where( ( (lon >= 42.0) & (lon < 65.0) & (lat < -65.5) & (lat >= -69.0) ) | \
@@ -89,7 +98,12 @@ def remap(x,y,M):
                   ( (lon >= 75.0) & (lon < 80.0) & (lat < -67.0) & (lat >= -71.0) ) ) \
       ]=3
    # East Antarctica (Pacific-Indian sector)
-   msk[ np.where( ( (lon >=  80.0) & (lon < 158.0) & (lat < -64.5) & (lat >= -70.0) ) | \
+   #msk[ np.where( ( (lon >=  80.0) & (lon < 135.0) & (lat < -64.5) & (lat >= -68.0) ) | \
+   #               ( (lon >= 135.0) & (lon < 158.0) & (lat < -64.5) & (lat >= -70.0) ) | \
+   #               ( (lon >= 158.0) & (lon < 172.0) & (lat < -64.5) & (lat >= -72.0) ) ) \
+   #   ]=4
+   msk[ np.where( ( (lon >=  80.0) & (lon < 135.0) & (lat < -64.5) & (lat >= -68.5) ) | \
+                  ( (lon >= 135.0) & (lon < 158.0) & (lat < -64.5) & (lat >= (-3.5*lon-68.5*158.0+135.0*72.0)/23.0 ) ) | \
                   ( (lon >= 158.0) & (lon < 172.0) & (lat < -64.5) & (lat >= -72.0) ) ) \
       ]=4
    
@@ -148,8 +162,8 @@ def remap(x,y,M):
    # Amery, from Shirase to Publications :
    xi = np.array([  2161.,  1411. ])*1.e3
    yi = np.array([   381.,  1681. ])*1.e3
-   xf = np.array([ -1336.,  -342. ])*1.e3
-   yf = np.array([  -520.,   836. ])*1.e3
+   xf = np.array([ -1435.,  -441. ])*1.e3
+   yf = np.array([  -656.,   700. ])*1.e3
    aa=np.sqrt((xi[1]-xi[0])**2+(yi[1]-yi[0])**2)
    bb=np.sqrt((xf[1]-xf[0])**2+(yf[1]-yf[0])**2)
    print [xi+(xf-xi)*aa/bb], [yi+(yf-yi)*aa/bb]
