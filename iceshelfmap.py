@@ -78,10 +78,10 @@ def remap(x,y,M):
    #               | ( (lon <  -25.0) & (lon >=  -40.0) & (lat < -77.5) & (lat >= -85.0) ) \
    #               | ( (lon <= 180.0) & (lon >=  158.0) & (lat < -72.0) & (lat >= -87.0) ) ) \
    #   ]=1
-   msk[ np.where(  ( (lon <  -40.0) & (lon >= -110.0) & (lat < -62.0) & (lat >= -90.0) ) | \
-                   ( (lon < -110.0) & (lon >= -180.0) & (lat < (-11.0*lon+62.0*202.0-110.0*73.0)/(-92.0) ) & (lat >= -90.0) ) | \
-                   ( (lon <= 180.0) & (lon >=  158.0) & (lat < (-11.0*lon-62.0*158.0+250.0*73.0)/(-92.0) ) & (lat >= -90.0) ) | \
-                   ( (lon <  -25.0) & (lon >=  -40.0) & (lat < (15.5*lon+40.0*77.5-25.0*62.0)/(-15.0) )    & (lat >= -90.0) ) ) \
+   msk[ np.where(  ( (lon <  -55.0) & (lon >=  -65.0) & (lat < -62.0)                                      & (lat >= -90.0) ) | \
+                   ( (lon <  -65.0) & (lon >= -180.0) & (lat < (-10.0*lon+62.0*180.0-65.0*72.0)/(-115.0) ) & (lat >= -90.0) ) | \
+                   ( (lon <= 180.0) & (lon >=  158.0) & (lat < -72.0)                                      & (lat >= -90.0) ) | \
+                   ( (lon <  -30.0) & (lon >=  -55.0) & (lat < (6.5*lon+68.5*55.0-30.0*62.0)/(-25.0) )     & (lat >= -90.0) ) ) \
       ]=1
    # DML from Brunt to Shirase :
    #msk[ np.where( ( (lon >= -30.0) & (lon < -15.0) & (lat < -68.5) & (lat >= -77.5) ) | \
@@ -139,7 +139,7 @@ def remap(x,y,M):
    # DML from Brunt to Shirase :
    xi = np.array([  -560., 1231. ])*1.e3
    yi = np.array([  1540., 1467. ])*1.e3
-   xf = np.array([ -1771., -234. ])*1.e3
+   xf = np.array([ -1821., -284. ])*1.e3
    yf = np.array([  1587.,  716. ])*1.e3 
    aa=np.sqrt((xi[1]-xi[0])**2+(yi[1]-yi[0])**2)
    bb=np.sqrt((xf[1]-xf[0])**2+(yf[1]-yf[0])**2)
@@ -197,8 +197,8 @@ def remap(x,y,M):
    # East Antarctica (Pacific-Indian sector) :
    xi = np.array([  2062.,   751. ])*1.e3
    yi = np.array([  -751., -2062. ])*1.e3
-   xf = np.array([  -973., -2278. ])*1.e3
-   yf = np.array([ -1371.,   -61. ])*1.e3
+   xf = np.array([ -1003., -2308. ])*1.e3
+   yf = np.array([ -1271.,    39. ])*1.e3
    aa=np.sqrt((xi[1]-xi[0])**2+(yi[1]-yi[0])**2)
    bb=np.sqrt((xf[1]-xf[0])**2+(yf[1]-yf[0])**2)
    print [xi+(xf-xi)*aa/bb], [yi+(yf-yi)*aa/bb]
