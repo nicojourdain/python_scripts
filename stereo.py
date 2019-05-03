@@ -127,14 +127,10 @@ def xy_to_lonlat(x_in,y_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon_pos
    else:
      pm    = 1
 
-   print np.shape(x2d)
-
    t_c = np.tan(np.pi/4.e0-lat_c/2.e0) / ( (1.e0-ex*np.sin(lat_c)) / (1.e0+ex*np.sin(lat_c)) )**(ex/2.e0)
    m_c = np.cos(lat_c) / np.sqrt( 1.e0 - ex**2.e0 * (np.sin(lat_c))**2.e0 )
    rho = np.sqrt(x2d**2.e0+y2d**2.e0)
    t   = rho * t_c / ( RT * m_c )
-
-   print np.shape(rho)
 
    chi = 0.5*np.pi - 2.e0 * np.arctan(t)
 
@@ -150,7 +146,5 @@ def xy_to_lonlat(x_in,y_in,RT=6378137.000,ex=0.08181919,lat_true=-71.000,lon_pos
  
    lon = np.degrees(lon)
    lat = np.degrees(lat)
-
-   print np.shape(lon)
 
    return [lon,lat]
