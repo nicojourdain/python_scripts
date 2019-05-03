@@ -3,10 +3,11 @@ import stereo
 
 #============================================================================
 #============================================================================
-#def origin(xx,yy,loni,lati,lonf,latf):
 def origin(xx,yy,xi,yi,xf,yf):
    """
-      Internal function.
+      Internal function to provide the origin of xx,yy, given that they have 
+      been transformed (translated and rotated) through a transformation that
+      transform the segment xi[:],yi[:] into xf[:],yf[:].
 
       Usage: 
         [x2d,y2d] = origin(xx,yy,loni,lati,lonf,latf)
@@ -14,10 +15,6 @@ def origin(xx,yy,xi,yi,xf,yf):
       All inputs are 2d numpy arrays defining initial and final longitude
       and latitude of 2 points. Returns original coordinates of rotated (x,y)
    """
-
-   #[xi,yi] = stereo.lonlat_to_xy(loni,lati)
-   #[xf,yf] = stereo.lonlat_to_xy(lonf,latf)
-   print [xi,yi],  [xf,yf] 
 
    trans = [xf[0]-xi[0],yf[0]-yi[0]]
    sss = np.sqrt((xi[1]-xi[0])**2+(yi[1]-yi[0])**2)
@@ -42,7 +39,7 @@ def origin(xx,yy,xi,yi,xf,yf):
 
 #============================================================================
 #============================================================================
-def remap(x,y,M):
+def remap(x,y,M,orientation='portrait'):
    """
      Remap Antarctic stereographic projection to maximize ice shelf sizes.
 
@@ -53,6 +50,7 @@ def remap(x,y,M):
      Input:
        x,y are the stereographic coordinates in m [1d numpy array]
        M is the variable to remap [2d numpy array]
+       orientation = 'portrait' [default] or 'landscape'
 
      Output:
        xnew,ynew = new discontinued coordinates (m) [1d numpy array]
@@ -64,50 +62,40 @@ def remap(x,y,M):
        05/2019 : First version (Nicolas Jourdain, IGE-CNRS)
 
    """
-  
+ 
+   if ( orientation == 'portrait' ):
+     angle_all=0.e0
+   elif ( orientation == 'landscape' ):
+     angle_all=0.e0
+   else:
+     print '~!@#$%^& Wrong orientation argument ==> setting to portrait.' 
+     angle_all=0.e0
+
    [lon,lat] = stereo.xy_to_lonlat(x,y)
    msk = np.zeros(lon.shape)
- 
+
    #-------------------------------------------------
    # Define masks (one value per sector):
    
    # West Ant. incl. FRIS and ROSS :
-   #msk[ np.where(   ( (lon <  -40.0) & (lon >= -110.0) & (lat < -62.0) & (lat >= -85.0) ) \
-   #               | ( (lon < -110.0) & (lon >= -140.0) & (lat < -73.0) & (lat >= -77.5) ) \
-   #               | ( (lon < -140.0) & (lon >= -180.0) & (lat < -73.0) & (lat >= -87.0) ) \
-   #               | ( (lon <  -25.0) & (lon >=  -40.0) & (lat < -77.5) & (lat >= -85.0) ) \
-   #               | ( (lon <= 180.0) & (lon >=  158.0) & (lat < -72.0) & (lat >= -87.0) ) ) \
-   #   ]=1
    msk[ np.where(  ( (lon <  -55.0) & (lon >=  -65.0) & (lat < -62.0)                                      & (lat >= -90.0) ) | \
                    ( (lon <  -65.0) & (lon >= -180.0) & (lat < (-10.0*lon+62.0*180.0-65.0*72.0)/(-115.0) ) & (lat >= -90.0) ) | \
                    ( (lon <= 180.0) & (lon >=  158.0) & (lat < -72.0)                                      & (lat >= -90.0) ) | \
                    ( (lon <  -30.0) & (lon >=  -55.0) & (lat < (6.5*lon+68.5*55.0-30.0*62.0)/(-25.0) )     & (lat >= -90.0) ) ) \
       ]=1
    # DML from Brunt to Shirase :
-   #msk[ np.where( ( (lon >= -30.0) & (lon < -15.0) & (lat < -68.5) & (lat >= -77.5) ) | \
-   #               ( (lon >= -15.0) & (lon <   0.0) & (lat < -68.5) & (lat >= -75.0) ) | \
-   #               ( (lon >=   0.0) & (lon <  42.0) & (lat < -68.5) & (lat >= -72.5) ) ) \
-   #   ]=2
    msk[ np.where( ( (lon >= -30.0) & (lon < -15.0) & (lat < (4.5*lon-30.0*68.5)/30.0 ) & (lat >= -77.5) ) | \
                   ( (lon >= -15.0) & (lon <   0.0) & (lat < (4.5*lon-30.0*68.5)/30.0 ) & (lat >= (5.0*lon-15.0*72.5-20.0*77.5)/35.0 ) ) | \
                   ( (lon >=   0.0) & (lon <  20.0) & (lat < -68.5)                     & (lat >= (5.0*lon-15.0*72.5-20.0*77.5)/35.0 ) ) | \
                   ( (lon >=  20.0) & (lon <  42.0) & (lat < -68.5)                     & (lat >= (0.5*lon-42.0*72.5+20.0*72.0)/22.0 ) ) ) \
       ]=2
    # Amery, from Shirase to Publications :
-   #msk[ np.where( ( (lon >= 42.0) & (lon < 65.0) & (lat < -65.5) & (lat >= -69.0) ) | \
-   #               ( (lon >= 65.0) & (lon < 75.0) & (lat < -67.0) & (lat >= -74.0) ) | \
-   #               ( (lon >= 75.0) & (lon < 80.0) & (lat < -67.0) & (lat >= -71.0) ) ) \
-   #   ]=3
    msk[ np.where( ( (lon >= 42.0) & (lon < 54.0) & (lat < -65.2 )                                 & (lat >= (-2.5*lon-68.5*60.0+42.0*71.0)/18.0 ) ) | \
                   ( (lon >= 54.0) & (lon < 60.0) & (lat < (2.0*lon-67.2*54.0+80.0*65.2)/(-26.0) ) & (lat >= (-2.5*lon-68.5*60.0+42.0*71.0)/18.0 ) ) | \
                   ( (lon >= 60.0) & (lon < 67.0) & (lat < (2.0*lon-67.2*54.0+80.0*65.2)/(-26.0) ) & (lat >= (-3.0*lon-71.0*67.0+60.0*74.0)/7.0 )  ) | \
                   ( (lon >= 67.0) & (lon < 80.0) & (lat < (2.0*lon-67.2*54.0+80.0*65.2)/(-26.0) ) & (lat >= (4.5*lon-74.0*80.0+67.0*69.5)/13.0 )  ) ) \
       ]=3
    # East Antarctica (Pacific-Indian sector)
-   #msk[ np.where( ( (lon >=  80.0) & (lon < 135.0) & (lat < -64.5) & (lat >= -68.0) ) | \
-   #               ( (lon >= 135.0) & (lon < 158.0) & (lat < -64.5) & (lat >= -70.0) ) | \
-   #               ( (lon >= 158.0) & (lon < 172.0) & (lat < -64.5) & (lat >= -72.0) ) ) \
-   #   ]=4
    msk[ np.where( ( (lon >=  80.0) & (lon < 135.0) & (lat < -64.5)                                    & (lat >= -68.5) ) | \
                   ( (lon >= 135.0) & (lon < 158.0) & (lat < (5.5*lon-70.0*135.0+172.0*64.5)/(-37.0) ) & (lat >= (-3.5*lon-68.5*158.0+135.0*72.0)/23.0 ) ) | \
                   ( (lon >= 158.0) & (lon < 172.0) & (lat < (5.5*lon-70.0*135.0+172.0*64.5)/(-37.0) ) & (lat >= -72.0) ) ) \
@@ -144,12 +132,7 @@ def remap(x,y,M):
    aa=np.sqrt((xi[1]-xi[0])**2+(yi[1]-yi[0])**2)
    bb=np.sqrt((xf[1]-xf[0])**2+(yf[1]-yf[0])**2)
    print [xi+(xf-xi)*aa/bb], [yi+(yf-yi)*aa/bb]
-   #loni = [-20.0, 40.0] # longitude of two initial points
-   #lati = [-75.0,-72.5] # latitude of two initial points
-   #lonf = [-50.0,  0.0] # longitude of two final points
-   #latf = [-71.0,-85.0] # latitude of two final points
    
-   #[x2d_ori,y2d_ori]=origin(x,y,loni,lati,lonf,latf)
    [x2d_ori,y2d_ori]=origin(x,y,xi,yi,xf,yf)
   
    for kj in np.arange(0,np.size(y),1):
@@ -173,12 +156,7 @@ def remap(x,y,M):
    aa=np.sqrt((xi[1]-xi[0])**2+(yi[1]-yi[0])**2)
    bb=np.sqrt((xf[1]-xf[0])**2+(yf[1]-yf[0])**2)
    print [xi+(xf-xi)*aa/bb], [yi+(yf-yi)*aa/bb]
-   #loni = [  80.0,  40.0] # longitude of two initial points
-   #lati = [ -70.0, -70.0] # latitude of two initial points
-   #lonf = [ 120.0, -20.0] # longitude of two final points
-   #latf = [ -77.5, -85.5] # latitude of two final points
    
-   #[x2d_ori,y2d_ori]=origin(x,y,loni,lati,lonf,latf)
    [x2d_ori,y2d_ori]=origin(x,y,xi,yi,xf,yf)
    
    for kj in np.arange(0,np.size(y),1):
@@ -202,12 +180,7 @@ def remap(x,y,M):
    aa=np.sqrt((xi[1]-xi[0])**2+(yi[1]-yi[0])**2)
    bb=np.sqrt((xf[1]-xf[0])**2+(yf[1]-yf[0])**2)
    print [xi+(xf-xi)*aa/bb], [yi+(yf-yi)*aa/bb]
-   #loni = [ 110.0, 160.0] # longitude of two initial points
-   #lati = [ -70.0, -70.0] # latitude of two initial points
-   #lonf = [-155.0, -87.0] # longitude of two final points
-   #latf = [ -74.5, -70.5] # latitude of two final points
    
-   #[x2d_ori,y2d_ori]=origin(x,y,loni,lati,lonf,latf)
    [x2d_ori,y2d_ori]=origin(x,y,xi,yi,xf,yf)
    
    for kj in np.arange(0,np.size(y),1):
@@ -224,5 +197,9 @@ def remap(x,y,M):
    
    #-------------------------------------------------
    M2[ msk2 == 0 ] = np.nan
+
+   #-------------------------------------------------
+   # Barycenter :
+   
 
    return [x,y,lon2,lat2,msk2,M2]
