@@ -105,10 +105,11 @@ def remap(x,y,M,orientation='portrait'):
    # Define masks (one value per sector):
    
    # West Ant. incl. FRIS and ROSS :
-   msk[ np.where(  ( (lon <  -55.0) & (lon >=  -65.0) & (lat < -62.0)                                      & (lat >= -90.0) ) | \
-                   ( (lon <  -65.0) & (lon >= -180.0) & (lat < (-10.0*lon+62.0*180.0-65.0*72.0)/(-115.0) ) & (lat >= -90.0) ) | \
-                   ( (lon <= 180.0) & (lon >=  158.0) & (lat < -72.0)                                      & (lat >= -90.0) ) | \
-                   ( (lon <  -30.0) & (lon >=  -55.0) & (lat < (6.5*lon+68.5*55.0-30.0*62.0)/(-25.0) )     & (lat >= -90.0) ) ) \
+   msk[ np.where(  ( (lon <  -55.0) & (lon >=  -65.0) & (lat < -62.0)                                     & (lat >= -90.0) ) | \
+                   ( (lon <  -65.0) & (lon >= -140.0) & (lat < (-10.0*lon+62.0*140.0-65.0*72.0)/(-75.0) ) & (lat >= -90.0) ) | \
+                   ( (lon < -140.0) & (lon >= -180.0) & (lat < -72.0)                                     & (lat >= -90.0) ) | \
+                   ( (lon <= 180.0) & (lon >=  158.0) & (lat < -72.0)                                     & (lat >= -90.0) ) | \
+                   ( (lon <  -30.0) & (lon >=  -55.0) & (lat < (6.5*lon+68.5*55.0-30.0*62.0)/(-25.0) )    & (lat >= -90.0) ) ) \
       ]=1
    # DML from Brunt to Shirase :
    msk[ np.where( ( (lon >= -30.0) & (lon < -15.0) & (lat < (4.5*lon-30.0*68.5)/30.0 ) & (lat >= -77.5) ) | \
