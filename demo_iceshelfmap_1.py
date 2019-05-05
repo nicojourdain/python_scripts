@@ -5,7 +5,6 @@ import stereo
 import iceshelfmap as isf
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
-#file_data='/Users/jourdain/XYLAR_ISMIP6_DATA/IMBIE2/rignot_melt_rates_8km.nc'
 file_data='/Users/jourdain/XYLAR_ISMIP6_DATA/IMBIE2/bedmap2_8km.nc'
 
 print 'Reading ', file_data
@@ -14,10 +13,8 @@ nc1 = xr.open_dataset(file_data)
 x=nc1['x'].values[:]
 y=nc1['y'].values[:]
 surface=nc1['surface'].values[:,:]
-#surface=nc1['melt_actual'].values[:,:]
 
 [xnew,ynew,lonnew,latnew,mask,Mnew]=isf.remap(x,y,surface,orientation='portrait') 
-#[xnew,ynew,lonnew,latnew,mask,Mnew]=isf.remap(x,y,surface,orientation='dev') 
 
 [x2d,y2d]=np.meshgrid(xnew,ynew)
 
@@ -65,7 +62,6 @@ ax.xaxis.set_ticks([])
 ax.yaxis.set_ticks([])
 ax.xaxis.set_ticklabels([])
 ax.yaxis.set_ticklabels([])
-#asp=((np.max(ynew)-np.min(ynew))/(np.max(xnew)-np.min(xnew)))
 ax.set_aspect(1.0)
 print '[Ok]'
 
