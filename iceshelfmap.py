@@ -65,9 +65,16 @@ def remap(x,y,M,orientation='portrait'):
 
    """
 
-  #-------------------------------------------------
-  # Global transformations (applied after all the parts
-  # have been concatenated together) : 
+   if ( x[1] < x[0] ):
+     x = x[::-1]
+     M = M[:,::-1]
+   if ( y[1] < y[0] ):
+     y = y[::-1]
+     M = M[::-1,:]
+
+   #-------------------------------------------------
+   # Global transformations (applied after all the parts
+   # have been concatenated together) : 
  
    # angle for global rotation of the figure
    if ( orientation == 'portrait' ):
@@ -278,8 +285,6 @@ def remap(x,y,M,orientation='portrait'):
    imax_frame = np.argmin((x-xmax_frame)**2)
    jmin_frame = np.argmin((y-ymin_frame)**2)
    jmax_frame = np.argmin((y-ymax_frame)**2)
-
-   print imin_frame, imax_frame, jmin_frame, jmax_frame
 
    return [x[imin_frame:imax_frame],y[jmin_frame:jmax_frame],lon2[jmin_frame:jmax_frame,imin_frame:imax_frame], \
                                                              lat2[jmin_frame:jmax_frame,imin_frame:imax_frame], \
