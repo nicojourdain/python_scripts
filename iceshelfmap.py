@@ -25,8 +25,6 @@ def origin(xx,yy,xi,yi,xf,yf):
    xx2 = (xf[1]-xf[0])/sss
    yy2 = (yf[1]-yf[0])/sss
    rotat = np.array([ [ xx1*xx2+yy1*yy2 , xx2*yy1-xx1*yy2 ], [ xx1*yy2-xx2*yy1, xx1*xx2+yy1*yy2 ] ])
-   ## Check inverse transformation:
-   #[check_xi, check_yi] = np.matmul( np.linalg.inv(rotat),[xf[:]-xf[0],yf[:]-yf[0]] ) + np.swapaxes( [[xf[0]-trans[0],yf[0]-trans[1]]], 0, 1) * np.ones((1,np.size(xf[:])))
 
    [x2d,y2d] = np.meshgrid(xx,yy)
 
@@ -108,6 +106,9 @@ def remap(x,y,M,orientation='portrait'):
    [lon,lat] = stereo.xy_to_lonlat(x,y)
    msk = np.zeros(lon.shape)
 
+   print np.min(lon), np.max(lon)
+   print np.min(lat), np.max(lat)
+
    #-------------------------------------------------
    # Define masks (one value per sector):
    
@@ -135,7 +136,13 @@ def remap(x,y,M,orientation='portrait'):
                   ( (lon >= 135.0) & (lon < 158.0) & (lat < (5.5*lon-70.0*135.0+172.0*64.5)/(-37.0) ) & (lat >= (-3.5*lon-68.5*158.0+135.0*72.0)/23.0 ) ) | \
                   ( (lon >= 158.0) & (lon < 172.0) & (lat < (5.5*lon-70.0*135.0+172.0*64.5)/(-37.0) ) & (lat >= -72.0) ) ) \
       ]=4
-   
+  
+   # Define halo so that origins out of current frame end up with mask = 0 after the transformation:
+   msk[ 0,:] = 0
+   msk[-1,:] = 0
+   msk[:, 0] = 0
+   msk[:,-1] = 0
+ 
    #-------------------------------------------------
    # Translations and rotations :
    
