@@ -292,7 +292,16 @@ def remap(x,y,M,orientation='portrait'):
    imax_frame = np.argmin((x-xmax_frame)**2)
    jmin_frame = np.argmin((y-ymin_frame)**2)
    jmax_frame = np.argmin((y-ymax_frame)**2)
+ 
+   #-------------------------------------------------
+   # Put a halo of msk2=0 (to have contours even without frame) :
 
+   msk2[jmin_frame,:] = 0
+   msk2[jmax_frame,:] = 0
+   msk2[:,imin_frame] = 0
+   msk2[:,imax_frame] = 0
+
+   #-------------------------------------------------
    return [x[imin_frame:imax_frame],y[jmin_frame:jmax_frame],lon2[jmin_frame:jmax_frame,imin_frame:imax_frame], \
                                                              lat2[jmin_frame:jmax_frame,imin_frame:imax_frame], \
                                                              msk2[jmin_frame:jmax_frame,imin_frame:imax_frame], \
