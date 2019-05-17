@@ -39,7 +39,7 @@ def origin(xx,yy,xi,yi,xf,yf):
 
 #============================================================================
 #============================================================================
-def remap(x,y,M,orientation='portrait'):
+def remap(x,y,M,orientation='portrait',crop=True):
    """
      Remap Antarctic stereographic projection to maximize ice shelf sizes.
 
@@ -57,6 +57,8 @@ def remap(x,y,M,orientation='portrait'):
        lonnew,latnew = (lon,lat) on new grid [2d numpy array]
        msk = mask defining the 4 areas [2d numpy array]
        Mnew = remapped 2d variable [2d numpy array]
+
+     NB: we keep the original resolution through the process.
 
      History:
        05/2019 : First version (Nicolas Jourdain, IGE-CNRS)
@@ -103,9 +105,6 @@ def remap(x,y,M,orientation='portrait'):
    #-------------------------------------------------
    [lon,lat] = stereo.xy_to_lonlat(x,y)
    msk = np.zeros(lon.shape)
-
-   print np.min(lon), np.max(lon)
-   print np.min(lat), np.max(lat)
 
    #-------------------------------------------------
    # Define masks (one value per sector):
@@ -298,21 +297,25 @@ def remap(x,y,M,orientation='portrait'):
 
    #-------------------------------------------------
    # reframe output 
-   imin_frame = np.argmin((x-xmin_frame)**2)
-   imax_frame = np.argmin((x-xmax_frame)**2)
-   jmin_frame = np.argmin((y-ymin_frame)**2)
-   jmax_frame = np.argmin((y-ymax_frame)**2)
- 
-   #-------------------------------------------------
-   # Put a halo of msk2=0 (to have contours even without frame) :
+   if crop:
+     imin_frame = np.argmin((x-xmin_frame)**2)
+     imax_frame = np.argmin((x-xmax_frame)**2)
+     jmin_frame = np.argmin((y-ymin_frame)**2)
+     jmax_frame = np.argmin((y-ymax_frame)**2)
+     # Put a halo of msk2=0 (to have contours even without frame) :
+     msk2[jmin_frame,:] = 0
+     msk2[jmax_frame,:] = 0
+     msk2[:,imin_frame] = 0
+     msk2[:,imax_frame] = 0
+   else:
+     imin_frame = 0
+     imax_frame = np.size(x)-1
+     jmin_frame = 0
+     jmax_frame = np.size(y)-1
 
-   msk2[jmin_frame,:] = 0
-   msk2[jmax_frame,:] = 0
-   msk2[:,imin_frame] = 0
-   msk2[:,imax_frame] = 0
-
    #-------------------------------------------------
-   return [x[imin_frame:imax_frame],y[jmin_frame:jmax_frame],lon2[jmin_frame:jmax_frame,imin_frame:imax_frame], \
-                                                             lat2[jmin_frame:jmax_frame,imin_frame:imax_frame], \
-                                                             msk2[jmin_frame:jmax_frame,imin_frame:imax_frame], \
-                                                               M2[jmin_frame:jmax_frame,imin_frame:imax_frame] ]
+   return [x[imin_frame:imax_frame+1],y[jmin_frame:jmax_frame+1],lon2[jmin_frame:jmax_frame+1,imin_frame:imax_frame+1], \
+                                                                 lat2[jmin_frame:jmax_frame+1,imin_frame:imax_frame+1], \
+                                                                 msk2[jmin_frame:jmax_frame+1,imin_frame:imax_frame+1], \
+                                                                   M2[jmin_frame:jmax_frame+1,imin_frame:imax_frame+1] ]
+
