@@ -75,29 +75,27 @@ def remap(x,y,M,orientation='portrait'):
    # have been concatenated together) : 
  
    # angle for global rotation of the figure
-   if ( orientation == 'portrait' ):
+   if ( orientation == 'portrait' ) | ( orientation == 'landscape' ):
      angle_glob=-10.e0
-   elif ( orientation == 'landscape' ):
-     angle_glob=80.e0
    elif ( orientation == 'dev' ):
      angle_glob=0.e0
    else:
      print '~!@#$%^& Wrong orientation argument ==> setting to portrait.' 
-     angle_glob=0.e0
+     angle_glob=-10.e0
    angle_glob = np.radians(angle_glob)
 
    # global translation of the figure
-   trans_glob = np.array([  1060.e3, 40.e3 ])  # in meters
+   trans_glob = np.array([  1060.e3, 65.e3 ])  # in meters
    if ( orientation == 'dev' ):
      trans_glob = np.array([ 0.e0, 0.e0 ])
 
    # new frame :
    if ( orientation == 'portrait' ):
-     [ xmin_frame, xmax_frame ] = np.array([-1.5e6,1.5e6])
-     [ ymin_frame, ymax_frame ] = np.array([-2.2e6,2.2e6])
+     [ xmin_frame, xmax_frame ] = np.array([-1.50e6,1.50e6])
+     [ ymin_frame, ymax_frame ] = np.array([-2.15e6,2.15e6])
    elif ( orientation == 'landscape' ):
-     [ xmin_frame, xmax_frame ] = np.array([-2.2e6,2.2e6])
-     [ ymin_frame, ymax_frame ] = np.array([-1.5e6,1.5e6])
+     [ xmin_frame, xmax_frame ] = np.array([-2.15e6,2.15e6])
+     [ ymin_frame, ymax_frame ] = np.array([-1.50e6,1.50e6])
    else:
      [ xmin_frame, xmax_frame ] = np.array([-3.e6,3.e6])
      [ ymin_frame, ymax_frame ] = np.array([-3.e6,3.e6])
@@ -113,14 +111,16 @@ def remap(x,y,M,orientation='portrait'):
    # Define masks (one value per sector):
    
    # West Ant. incl. FRIS and ROSS :
-   msk[ np.where(  ( (lon <  -55.0) & (lon >=  -65.0) & (lat < -62.0)                                     & (lat >= -90.0) ) | \
-                   ( (lon <  -65.0) & (lon >= -140.0) & (lat < (-10.0*lon+62.0*140.0-65.0*72.0)/(-75.0) ) & (lat >= -90.0) ) | \
+   msk[ np.where(  ( (lon <  -25.0) & (lon >=  -58.0) & (lat < (15.5*lon+77.5*58.0-25.0*62.0)/(-33.0) )   & (lat >= -90.0) ) | \
+                   ( (lon <  -58.0) & (lon >=  -60.0) & (lat < -62.0)                                     & (lat >= -90.0) ) | \
+                   ( (lon <  -60.0) & (lon >= -100.0) & (lat < (-8.0*lon+62.0*100.0-60.0*70.0)/(-40.0) )  & (lat >= -90.0) ) | \
+                   ( (lon < -100.0) & (lon >= -140.0) & (lat < -70.0)                                     & (lat >= -90.0) ) | \
                    ( (lon < -140.0) & (lon >= -180.0) & (lat < -72.0)                                     & (lat >= -90.0) ) | \
-                   ( (lon <= 180.0) & (lon >=  158.0) & (lat < -72.0)                                     & (lat >= -90.0) ) | \
-                   ( (lon <  -30.0) & (lon >=  -55.0) & (lat < (6.5*lon+68.5*55.0-30.0*62.0)/(-25.0) )    & (lat >= -90.0) ) ) \
+                   ( (lon <= 180.0) & (lon >=  158.0) & (lat < -72.0)                                     & (lat >= -90.0) ) ) \
       ]=1
    # DML from Brunt to Shirase :
-   msk[ np.where( ( (lon >= -30.0) & (lon < -15.0) & (lat < (4.5*lon-30.0*68.5)/30.0 ) & (lat >= -77.5) ) | \
+   msk[ np.where( ( (lon >= -30.0) & (lon < -25.0) & (lat < (4.5*lon-30.0*68.5)/30.0 ) & (lat >= (15.5*lon+77.5*58.0-25.0*62.0)/(-33.0) ) ) | \
+                  ( (lon >= -25.0) & (lon < -15.0) & (lat < (4.5*lon-30.0*68.5)/30.0 ) & (lat >= -77.5) ) | \
                   ( (lon >= -15.0) & (lon <   0.0) & (lat < (4.5*lon-30.0*68.5)/30.0 ) & (lat >= (5.0*lon-15.0*72.5-20.0*77.5)/35.0 ) ) | \
                   ( (lon >=   0.0) & (lon <  20.0) & (lat < -68.5)                     & (lat >= (5.0*lon-15.0*72.5-20.0*77.5)/35.0 ) ) | \
                   ( (lon >=  20.0) & (lon <  42.0) & (lat < -68.5)                     & (lat >= (0.5*lon-42.0*72.5+20.0*72.0)/22.0 ) ) ) \
@@ -285,6 +285,16 @@ def remap(x,y,M,orientation='portrait'):
          M2  [kj,ki] = M  [jtmp,itmp]
    
    M2[ msk2 == 0 ] = np.nan
+
+   #-------------------------------------------------
+   if ( orientation == 'landscape' ):
+     M2=np.swapaxes(M2,1,0)
+     msk2=np.swapaxes(msk2,1,0)
+     lon2=np.swapaxes(lon2,1,0)
+     lat2=np.swapaxes(lat2,1,0)
+     tmpp=x
+     x=y
+     y=tmpp
 
    #-------------------------------------------------
    # reframe output 
