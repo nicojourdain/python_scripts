@@ -1,5 +1,17 @@
 import numpy as np
 
+def sigdigit(aa,n)
+   """round aa to n significant digits
+
+      Examples:
+           sigdigit(1.3333,2)=1.3e+0
+           sigdigit(133.33,2)=1.3e+2
+   """
+   tmp1=np.power(10.e0,np.floor(np.log10(aa)))
+   tmp2=np.power(10,n)
+   return np.rint(tmp2*aa/tmp1)*tmp2*tmp1
+
+
 def smooth(x,window_len=11,window='hanning'):
     """smooth the data using a window with requested size.
     
