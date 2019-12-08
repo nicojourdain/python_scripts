@@ -1,6 +1,6 @@
 import numpy as np
 
-def sigdigit(aa,n)
+def sigdigit(aa,n):
    """round aa to n significant digits
 
       Examples:
