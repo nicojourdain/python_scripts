@@ -7,9 +7,8 @@ def sigdigit(aa,n):
            sigdigit(1.3333,2)=1.3e+0
            sigdigit(133.33,2)=1.3e+2
    """
-   tmp1=np.power(10.e0,np.floor(np.log10(aa)))
-   tmp2=np.power(10,n-1)
-   return np.rint(tmp2*aa/tmp1)*tmp2*tmp1
+   tmp1=np.power(10,np.floor(np.log10(np.abs(aa))))
+   return np.rint(10**(n-1)*aa/tmp1)*10**(1-n)*tmp1
 
 
 def smooth(x,window_len=11,window='hanning'):
