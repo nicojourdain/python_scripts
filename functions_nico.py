@@ -8,7 +8,7 @@ def sigdigit(aa,n):
            sigdigit(133.33,2)=1.3e+2
    """
    tmp1=np.power(10.e0,np.floor(np.log10(aa)))
-   tmp2=np.power(10,n)
+   tmp2=np.power(10,n-1)
    return np.rint(tmp2*aa/tmp1)*tmp2*tmp1
 
 
