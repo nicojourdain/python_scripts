@@ -1,14 +1,24 @@
 import numpy as np
 
-def sigdigit(aa,n):
-   """round aa to n significant digits
+def sigdigit(a,n):
+   """round a to n significant digits
 
       Examples:
-           sigdigit(1.3333,2)=1.3e+0
-           sigdigit(133.33,2)=1.3e+2
+        nico.sigdigit([0.,1.111111,0.],2)          -> array([0. , 1.1, 0. ])
+        nico.sigdigit([999.9,1.111111,-323.684],2) -> array([1000. , 1.1, -320. ])
+        nico.sigdigit(2.2222222222,3)              -> array([2.22])
+        nico.sigdigit(0.,3)                        -> array([0.])
+        nico.sigdigit([0.,0.,0.],3)                -> array([0., 0., 0.])
+
    """
-   tmp1=np.power(10,np.floor(np.log10(np.abs(aa))))
-   return np.rint(10**(n-1)*aa/tmp1)*10**(1-n)*tmp1
+   aa=np.array(a)
+   masked = aa==0
+   bb=np.ones(np.size(aa))
+   if np.size(bb[~masked]) != 0:
+     bb[~masked]=np.power(10,np.floor(np.log10(np.abs(aa[~masked]))))
+     return np.rint(10**(n-1)*aa/bb)*10**(1-n)*bb
+   else:
+     return bb*0.e0
 
 
 def smooth(x,window_len=11,window='hanning'):
