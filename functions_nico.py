@@ -1,4 +1,27 @@
 import numpy as np
+import matplotlib
+
+def cbcol(n,withblack=True):
+   """give n colors that are color blind friendly
+
+      Example:
+        col=nico.cbcol(3,withblack=False)
+        plot(x,y0,color=col[0])
+        plot(x,y1,color=col[1])
+        plot(x,y2,color=col[2])
+   """
+   if withblack:
+     cbbPalette=["#000000", "#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#620251"]
+   else:
+     cbbPalette=["#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#620251", "#999999"]
+   ncb=np.size(cbbPalette)
+   if n > ncb:
+     raise Exception('This fucnction is not defined for more colors than {}'.format(ncb))
+   col = []
+   for kk in np.arange(0,ncb):
+     col.append(matplotlib.colors.hex2color(cbbPalette[kk]))
+   return col
+
 
 def sigdigit(a,n):
    """round a to n significant digits
