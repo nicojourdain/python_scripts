@@ -11,9 +11,9 @@ def cbcol(n,withblack=True):
         plot(x,y2,color=col[2])
    """
    if withblack:
-     cbbPalette=["#000000", "#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#620251"]
+     cbbPalette=["#000000", "#E69F00", "#56B4E9", "#CC79A7", "#F0E442", "#0072B2", "#D55E00", "#999999", "#009E73", "#620251"]
    else:
-     cbbPalette=["#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#620251", "#999999"]
+     cbbPalette=["#E69F00", "#56B4E9", "#CC79A7", "#620251", "#F0E442", "#0072B2", "#D55E00", "#999999", "#009E73"]
    ncb=np.size(cbbPalette)
    if n > ncb:
      raise Exception('This fucnction is not defined for more colors than {}'.format(ncb))
