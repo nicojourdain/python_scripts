@@ -16,7 +16,9 @@ def cbcol(n,withblack=True):
      cbbPalette=["#E69F00", "#56B4E9", "#CC79A7", "#620251", "#F0E442", "#0072B2", "#D55E00", "#999999", "#009E73"]
    ncb=np.size(cbbPalette)
    if n > ncb:
-     raise Exception('This fucnction is not defined for more colors than {}'.format(ncb))
+     print('The cbcol fucnction is not defined for more colors than {}'.format(ncb))
+     exit()
+     #raise Exception('This fucnction is not defined for more colors than {}'.format(ncb))
    col = []
    for kk in np.arange(0,ncb):
      col.append(matplotlib.colors.hex2color(cbbPalette[kk]))
@@ -77,17 +79,22 @@ def smooth(x,window_len=11,window='hanning'):
     """
 
     if x.ndim != 1:
-        raise ValueError, "smooth only accepts 1 dimension arrays."
+        #raise ValueError, "smooth only accepts 1 dimension arrays."
+        print("smooth only accepts 1 dimension arrays.")
+        exit()
 
     if x.size < window_len:
-        raise ValueError, "Input vector needs to be bigger than window size."
+        #raise ValueError, "Input vector needs to be bigger than window size."
+        print("Input vector needs to be bigger than window size.")
+        exit()
 
     if window_len<3:
         return x
 
     if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-        raise ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
-
+        #raise ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
+        print("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
+        exit()
 
     sx = np.size(x)
     s=np.r_[x[window_len-1:0:-1],x,x[-2:-window_len-1:-1]]
